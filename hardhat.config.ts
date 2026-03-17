@@ -1,5 +1,4 @@
 import { defineConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-ethers";
 
 export default defineConfig({
   solidity: {
