@@ -1,37 +1,47 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract LuxuryWatch {
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    // La structure d'une montre
+contract LuxuryWatch is ERC721, Ownable {
+
     struct Watch {
-        string serialNumber;   // Numéro de série
-        string model;          // Modèle de la montre
-        address owner;         // Propriétaire actuel
-        bool exists;           // Est-ce que la montre existe ?
+        string serialNumber;
+        string model;
+        string metadataURI;
     }
 
-    // Une liste de toutes les montres enregistrées
     mapping(uint256 => Watch) public watches;
+    uint256 private _tokenIdCounter;
 
-    // Un compteur pour donner un ID à chaque montre
-    uint256 public watchCount;
+    constructor() ERC721("LuxuryWatch", "LXW") Ownable(msg.sender) {}
 
-    // Enregistrer une nouvelle montre
-    function registerWatch(string memory _serialNumber, string memory _model) public {
-        watchCount++;
-        watches[watchCount] = Watch({
+    function mintWatch(
+        address to,
+        string memory _serialNumber,
+        string memory _model,
+        string memory _metadataURI
+    ) public onlyOwner returns (uint256) {
+        _tokenIdCounter++;
+        uint256 tokenId = _tokenIdCounter;
+
+        _safeMint(to, tokenId);
+
+        watches[tokenId] = Watch({
             serialNumber: _serialNumber,
             model: _model,
-            owner: msg.sender,
-            exists: true
+            metadataURI: _metadataURI
         });
+
+        return tokenId;
     }
 
-    // Récupérer les infos d'une montre
-    function getWatch(uint256 _id) public view returns (string memory, string memory, address) {
-        require(watches[_id].exists, "Cette montre n'existe pas");
-        Watch memory w = watches[_id];
-        return (w.serialNumber, w.model, w.owner);
+    function getWatch(uint256 tokenId) public view returns (
+        string memory, string memory, string memory, address
+    ) {
+        require(tokenId <= _tokenIdCounter, "Cette montre n'existe pas");
+        Watch memory w = watches[tokenId];
+        return (w.serialNumber, w.model, w.metadataURI, ownerOf(tokenId));
     }
 }
