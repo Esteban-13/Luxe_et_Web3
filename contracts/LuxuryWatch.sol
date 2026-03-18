@@ -49,7 +49,7 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
     }
 
     // ERC-5192 : le certificat est toujours verrouillé
-    function locked(uint256 tokenId) external pure override returns (bool) {
+    function locked(uint256) external pure override returns (bool) {
         return true;
     }
 
@@ -61,6 +61,7 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
     function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
         revert("Certificat non transferable");
     }
+    
 
     // Récupérer les infos d'une montre
     function getWatch(uint256 tokenId) public view returns (
