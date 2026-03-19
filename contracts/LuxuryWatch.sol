@@ -35,7 +35,7 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
         _tokenIdCounter++;
         uint256 tokenId = _tokenIdCounter;
 
-        _safeMint(address(this), tokenId);
+        _safeMint(msg.sender, tokenId);
 
         watches[tokenId] = Watch({
             serialNumber: _serialNumber,
@@ -48,7 +48,6 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
         emit Locked(tokenId);
         return tokenId;
     }
-
     // Le client achète une montre
     function buyWatch(uint256 tokenId, address buyer) public onlyOwner {
         require(watches[tokenId].forSale, "Montre non disponible");
