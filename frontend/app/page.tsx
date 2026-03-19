@@ -1,61 +1,97 @@
 "use client"
+
 import { useState } from "react"
-import Link from "next/link"
-import Navbar from "@/components/Navbar"
-import ProductCard from "@/components/ProductCard"
-import { useWatches } from "@/lib/useWatches"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
 
-interface CartItem {
-  tokenId: number
-  name: string
-  serialNumber: string
-  price: number
-  quantity: number
-}
+export default function LoginPage() {
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-export default function Home() {
-  const { watches, loading } = useWatches()
-  const [cart, setCart] = useState<CartItem[]>([])
-
-  function addToCart(watch: { tokenId: number; name: string; serialNumber: string; price: number }) {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.tokenId === watch.tokenId)
-      if (existing) {
-        return prev.map((item) =>
-          item.tokenId === watch.tokenId ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      }
-      return [...prev, { ...watch, quantity: 1 }]
-    })
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email) {
+      setError("Veuillez entrer votre adresse électronique")
+      return
+    }
+    setLoading(true)
+    setError("")
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      localStorage.setItem("timury_user", email)
+      router.push("/home")
+    } catch {
+      setError("Une erreur est survenue, veuillez réessayer")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="min-h-screen flex flex-col max-w-sm mx-auto">
-      <Navbar isHome />
-      <main className="flex-1 px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="font-serif text-4xl font-light text-[#1a1a2e] mb-4">
-            Bienvenue chez Timury
-          </h1>
-          <div className="w-8 h-px bg-[#b8860b] mx-auto mb-4" />
-          <p className="text-[12px] text-[#3a3a5c] leading-relaxed font-light mb-5">
-            « L&#39;authenticité ne devrait pas être une question. Elle devrait être une certitude. »
-          </p>
-          <Link href="/scan" className="px-6 py-2 bg-[#1a1a2e] text-[#e8c96a] rounded-full text-[10px] uppercase tracking-widest">
-            Scannez votre article ici
-          </Link>
+    <div className="relative min-h-screen flex flex-col items-center justify-end max-w-sm mx-auto overflow-hidden">
+
+      {/* Image de fond */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/bg-login.png"
+          alt="Timury background"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+      </div>
+
+      {/* Logo centré en haut */}
+      <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
+        <Image
+          src="/logo.png"
+          alt="Timury"
+          width={120}
+          height={120}
+          className="object-contain"
+        />
+      </div>
+
+      {/* Formulaire en bas */}
+      <div className="relative z-10 w-full px-6 pb-12 flex flex-col gap-4">
+
+        {/* Connectez-vous */}
+        <p className="text-center text-[#e8c96a] text-[18px] font-bold uppercase tracking-widest mb-1">
+          Connectez-vous
+        </p>
+
+        {/* Input email */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] uppercase tracking-widest text-[#e8c96a]/70">
+            Adresse électronique
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="votre@email.com"
+            className="w-full px-5 py-4 bg-black/30 border border-[#b8860b]/60 rounded-full text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-[#b8860b] transition-colors backdrop-blur-sm"
+          />
         </div>
 
-        {loading ? (
-          <div className="text-center py-16 text-[#3a3a5c] text-sm font-light">
-            Chargement des montres...
-          </div>
-        ) : (
-          watches.map((watch) => (
-            <ProductCard key={watch.tokenId} watch={watch} onAddToCart={addToCart} />
-          ))
+        {error && (
+          <p className="text-[10px] text-red-400 text-center">{error}</p>
         )}
-      </main>
+
+        {/* Bouton connexion */}
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full py-4 bg-gradient-to-r from-[#c9a84c] to-[#e8c96a] text-[#1a1a2e] rounded-full text-[11px] font-medium uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
+          {loading ? "Connexion en cours..." : "Connexion"}
+        </button>
+
+      </div>
     </div>
   )
 }

@@ -13,7 +13,7 @@ export default function Navbar({ leftLabel, leftHref, showCart = true, isHome = 
     <nav className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 bg-[#1a1a2e] border-b border-[#3a3a5c]">
       <div className="w-24">
         {leftLabel && leftHref ? (
-          <Link href={leftHref} className="text-[10px] uppercase tracking-widest text-[#fdf6e3]/50 hover:text-[#e8c96a] transition-colors">
+          <Link href="/home" className="text-[10px] uppercase tracking-widest text-[#fdf6e3]/50 hover:text-[#e8c96a] transition-colors">
             ← {leftLabel}
           </Link>
         ) : isHome ? (
@@ -25,8 +25,8 @@ export default function Navbar({ leftLabel, leftHref, showCart = true, isHome = 
         )}
       </div>
 
-      <Link href="/">
-        <Image src="/logo.png" alt="Timury" width={36} height={36} className="object-contain" />
+      <Link href="/home">
+        <Image src="/logo.png" alt="Timury" width={70} height={70} className="object-contain" />
       </Link>
 
       <div className="w-24 flex items-center justify-end gap-3">
