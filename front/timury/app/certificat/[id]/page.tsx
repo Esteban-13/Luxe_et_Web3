@@ -25,17 +25,15 @@ export default function CertificatPage({ params }: { params: { id: string } }) {
             {product.name}
           </h2>
           {[
-            { label: "Marque", value: product.brand },
+            { label: "Modèle", value: product.name },
             { label: "Série", value: product.serial },
-            { label: "Propriétaire", value: product.owner },
-            { label: "Token ID", value: product.tokenId, mono: true },
-            { label: "Matériaux", value: product.materials },
+            { label: "Année de fabrication", value: product.yearOfManufacture },
+            { label: "Matière", value: product.materials },
+            { label: "Calibre", value: product.calibre },
           ].map((row) => (
             <div key={row.label} className="flex justify-between items-center py-2 border-b border-[#e0d5b0]">
               <span className="text-[10px] uppercase tracking-widest text-[#3a3a5c]">{row.label}</span>
-              <span className={`text-[11px] text-[#252540] ${row.mono ? "font-mono text-[10px]" : ""}`}>
-                {row.value}
-              </span>
+              <span className="text-[11px] text-[#252540]">{row.value}</span>
             </div>
           ))}
           <div className="flex justify-between items-center py-2">
@@ -44,16 +42,6 @@ export default function CertificatPage({ params }: { params: { id: string } }) {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
               Vérifié
             </span>
-          </div>
-          <div className="mt-4 pt-4 border-t border-[#e0d5b0]">
-            <p className="text-[10px] uppercase tracking-widest text-[#3a3a5c] mb-3">Historique</p>
-            {product.history.map((entry, i) => (
-              <div key={i} className="flex items-center gap-2 py-2 border-b border-[#e0d5b0] last:border-none">
-                <span className="w-2 h-2 rounded-full bg-[#b8860b] flex-shrink-0" />
-                <span className="text-[11px] text-[#252540]">{entry.label}</span>
-                <span className="text-[10px] text-[#3a3a5c] ml-auto">{entry.date}</span>
-              </div>
-            ))}
           </div>
           <button className="mt-4 w-full py-2 bg-[#1a1a2e] text-[#e8c96a] rounded-full text-[10px] uppercase tracking-widest hover:opacity-85 transition-opacity">
             Télécharger

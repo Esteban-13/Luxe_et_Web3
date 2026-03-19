@@ -7,6 +7,8 @@ export const products = [
     owner: "Jérémy",
     tokenId: "0x4F2A...C891",
     materials: "Acier 904L · Saphir",
+    yearOfManufacture: "2021",
+    calibre: "Cal. 3235",
     price: 12500,
     verified: true,
     history: [
@@ -23,6 +25,8 @@ export const products = [
     owner: "Jérémy",
     tokenId: "0x8B3D...A204",
     materials: "Or blanc 18k · Saphir",
+    yearOfManufacture: "2020",
+    calibre: "Cal. 26-330",
     price: 38000,
     verified: true,
     history: [
@@ -39,6 +43,8 @@ export const products = [
     owner: "Jérémy",
     tokenId: "0x1C9F...E550",
     materials: "Cuir Togo · Palladium",
+    yearOfManufacture: "2022",
+    calibre: "—",
     price: 24000,
     verified: true,
     history: [
