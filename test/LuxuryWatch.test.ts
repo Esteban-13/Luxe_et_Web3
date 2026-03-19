@@ -41,6 +41,14 @@ async function main() {
     console.log("✅ Erreur attendue pour montre inexistante");
   }
 
+  console.log("🧪 Test 5 : Vérifier que le transfert est bloqué...");
+  try {
+    await contract.transferFrom(signerAddress, "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", 1);
+    console.log("❌ Aurait dû échouer");
+  } catch (e) {
+    console.log("✅ Transfert correctement bloqué");
+  }
+
   console.log("\n🎉 Tous les tests sont passés !");
 }
 
