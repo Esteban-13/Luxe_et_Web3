@@ -30,7 +30,7 @@ export default function ScanPage() {
           Placez votre appareil près du tag NFC de votre produit pour le scanner
         </p>
         <Link
-          href="/"
+          href="/home"
           className="mt-12 text-[10px] uppercase tracking-widest text-[#3a3a5c] underline underline-offset-4"
         >
           Retour à l'accueil
