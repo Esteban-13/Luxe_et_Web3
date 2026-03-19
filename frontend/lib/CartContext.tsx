@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 
 interface CartItem {
   tokenId: number
@@ -23,6 +23,17 @@ const CartContext = createContext<CartContextType | null>(null)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
+
+  // Charger le panier depuis localStorage au démarrage
+  useEffect(() => {
+    const saved = localStorage.getItem("timury_cart")
+    if (saved) setCart(JSON.parse(saved))
+  }, [])
+
+  // Sauvegarder le panier dans localStorage à chaque changement
+  useEffect(() => {
+    localStorage.setItem("timury_cart", JSON.stringify(cart))
+  }, [cart])
 
   function addToCart(item: Omit<CartItem, "quantity">) {
     setCart((prev) => {

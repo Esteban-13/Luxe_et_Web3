@@ -9,6 +9,7 @@ export interface Watch {
   model: string
   metadataURI: string
   owner: string
+  forSale: boolean
   name: string
   materials: string
   yearOfManufacture: string
@@ -47,9 +48,8 @@ export function useWatches() {
             args: [BigInt(tokenId)],
           })
 
-          const [serialNumber, model, metadataURI, owner] = data as [string, string, string, string]
+          const [serialNumber, model, metadataURI, owner, forSale] = data as [string, string, string, string, boolean]
 
-          // Récupérer les métadonnées depuis IPFS
           const cid = metadataURI.replace("ipfs://", "")
           const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${cid}`
           const response = await fetch(ipfsUrl)
@@ -65,6 +65,7 @@ export function useWatches() {
             model,
             metadataURI,
             owner,
+            forSale,
             name: metadata.name,
             materials,
             yearOfManufacture,

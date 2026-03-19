@@ -1,40 +1,20 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import ImagePlaceholder from "@/components/ImagePlaceholder"
-
-interface CartItem {
-  tokenId: number
-  name: string
-  serialNumber: string
-  price: number
-  quantity: number
-}
+import { useCart } from "@/lib/CartContext"
 
 export default function PanierPage() {
-  const [cart, setCart] = useState<CartItem[]>([])
-
-  function updateQty(tokenId: number, delta: number) {
-    setCart((prev) =>
-      prev
-        .map((item) => item.tokenId === tokenId ? { ...item, quantity: item.quantity + delta } : item)
-        .filter((item) => item.quantity > 0)
-    )
-  }
-
-  function remove(tokenId: number) {
-    setCart((prev) => prev.filter((item) => item.tokenId !== tokenId))
-  }
-
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  const tva = Math.round(subtotal * 0.2)
-  const total = subtotal + tva
+  const router = useRouter()
+  const { cart, updateQty, remove, total } = useCart()
+  const tva = Math.round(total * 0.2)
+  const totalTTC = total + tva
 
   return (
     <div className="min-h-screen flex flex-col max-w-sm mx-auto">
-      <Navbar leftLabel="Catalogue" leftHref="/" showCart={false} />
+      <Navbar leftLabel="Catalogue" leftHref="/home" showCart={false} />
       <main className="flex-1 px-4 py-8">
         <h1 className="font-serif text-3xl font-light text-[#1a1a2e] mb-1">
           Mon panier
@@ -46,7 +26,7 @@ export default function PanierPage() {
         {cart.length === 0 ? (
           <div className="text-center py-16 text-[#3a3a5c] text-sm font-light">
             Votre panier est vide.
-            <Link href="/" className="block mt-4 text-[#b8860b] underline underline-offset-2 text-[12px]">
+            <Link href="/home" className="block mt-4 text-[#b8860b] underline underline-offset-2 text-[12px]">
               Retour au catalogue
             </Link>
           </div>
@@ -90,7 +70,7 @@ export default function PanierPage() {
               <p className="text-[9px] uppercase tracking-widest text-[#3a3a5c] mb-3">Récapitulatif</p>
               <div className="flex justify-between py-2 border-b border-[#e0d5b0]">
                 <span className="text-[11px] text-[#3a3a5c]">Sous-total</span>
-                <span className="text-[11px] text-[#252540]">{subtotal.toLocaleString("fr-FR")} €</span>
+                <span className="text-[11px] text-[#252540]">{total.toLocaleString("fr-FR")} €</span>
               </div>
               <div className="flex justify-between py-2 border-b border-[#e0d5b0]">
                 <span className="text-[11px] text-[#3a3a5c]">Livraison</span>
@@ -102,11 +82,14 @@ export default function PanierPage() {
               </div>
               <div className="flex justify-between pt-3">
                 <span className="text-[12px] font-medium text-[#1a1a2e] uppercase tracking-wider">Total</span>
-                <span className="font-serif text-[18px] text-[#1a1a2e]">{total.toLocaleString("fr-FR")} €</span>
+                <span className="font-serif text-[18px] text-[#1a1a2e]">{totalTTC.toLocaleString("fr-FR")} €</span>
               </div>
             </div>
 
-            <button className="mt-4 w-full py-3 bg-[#1a1a2e] text-[#e8c96a] rounded-full text-[11px] uppercase tracking-widest hover:opacity-85 transition-opacity">
+            <button
+              onClick={() => router.push("/paiement")}
+              className="mt-4 w-full py-3 bg-[#1a1a2e] text-[#e8c96a] rounded-full text-[11px] uppercase tracking-widest hover:opacity-85 transition-opacity"
+            >
               Procéder au paiement →
             </button>
           </>

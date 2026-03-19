@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
+import { useCart } from "@/lib/CartContext"
 
 interface NavbarProps {
   leftLabel?: string
@@ -9,6 +12,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ leftLabel, leftHref, showCart = true, isHome = false }: NavbarProps) {
+  const { count } = useCart()
+
   return (
     <nav className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 bg-[#1a1a2e] border-b border-[#3a3a5c]">
       <div className="w-24">
@@ -26,7 +31,7 @@ export default function Navbar({ leftLabel, leftHref, showCart = true, isHome = 
       </div>
 
       <Link href="/home">
-        <Image src="/logo.png" alt="Timury" width={70} height={70} className="object-contain" />
+        <Image src="/logo.png" alt="Timury" width={36} height={36} className="object-contain" />
       </Link>
 
       <div className="w-24 flex items-center justify-end gap-3">
@@ -37,6 +42,11 @@ export default function Navbar({ leftLabel, leftHref, showCart = true, isHome = 
               <line x1="3" y1="6" x2="21" y2="6"/>
               <path d="M16 10a4 4 0 01-8 0"/>
             </svg>
+            {count > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#b8860b] rounded-full text-[8px] text-white flex items-center justify-center">
+                {count}
+              </span>
+            )}
           </Link>
         )}
         <Link href="/profil">

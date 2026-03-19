@@ -1,33 +1,22 @@
 "use client"
-import { useState } from "react"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import ProductCard from "@/components/ProductCard"
 import { useWatches } from "@/lib/useWatches"
-
-interface CartItem {
-  tokenId: number
-  name: string
-  serialNumber: string
-  price: number
-  quantity: number
-}
+import { useCart } from "@/lib/CartContext"
 
 export default function Home() {
+  const router = useRouter()
   const { watches, loading } = useWatches()
-  const [cart, setCart] = useState<CartItem[]>([])
+  const { addToCart } = useCart()
 
-  function addToCart(watch: { tokenId: number; name: string; serialNumber: string; price: number }) {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.tokenId === watch.tokenId)
-      if (existing) {
-        return prev.map((item) =>
-          item.tokenId === watch.tokenId ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      }
-      return [...prev, { ...watch, quantity: 1 }]
-    })
-  }
+  useEffect(() => {
+    const user = localStorage.getItem("timury_user")
+    if (!user) router.push("/")
+  }, [router])
 
   return (
     <div className="min-h-screen flex flex-col max-w-sm mx-auto">
