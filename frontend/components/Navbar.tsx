@@ -31,7 +31,7 @@ export default function Navbar({ leftLabel, leftHref, showCart = true, isHome = 
       </div>
 
       <Link href="/home">
-        <Image src="/logo.png" alt="Timury" width={36} height={36} className="object-contain" />
+        <Image src="/logo.png" alt="Timury" width={70} height={70} className="object-contain" />
       </Link>
 
       <div className="w-24 flex items-center justify-end gap-3">
