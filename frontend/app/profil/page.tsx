@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar"
 import { useWatches } from "@/lib/useWatches"
 import Link from "next/link"
 
+const BUYER_ADDRESS = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+
 export default function ProfilPage() {
   const router = useRouter()
   const { watches } = useWatches()
@@ -20,8 +22,14 @@ export default function ProfilPage() {
     setEmail(user)
   }, [router])
 
+  // Filtrer uniquement les montres achetées par le client
+  const myCertificats = watches.filter(
+    (w) => w.owner.toLowerCase() === BUYER_ADDRESS.toLowerCase()
+  )
+
   function handleLogout() {
     localStorage.removeItem("timury_user")
+    localStorage.removeItem("timury_cart")
     router.push("/")
   }
 
@@ -45,11 +53,11 @@ export default function ProfilPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="bg-[#f5eccd] border border-[#e0d5b0] rounded-2xl p-4 text-center">
-            <p className="font-serif text-3xl text-[#1a1a2e] mb-1">{watches.length}</p>
+            <p className="font-serif text-3xl text-[#1a1a2e] mb-1">{myCertificats.length}</p>
             <p className="text-[9px] uppercase tracking-widest text-[#3a3a5c]">Montres</p>
           </div>
           <div className="bg-[#f5eccd] border border-[#e0d5b0] rounded-2xl p-4 text-center">
-            <p className="font-serif text-3xl text-[#1a1a2e] mb-1">{watches.length}</p>
+            <p className="font-serif text-3xl text-[#1a1a2e] mb-1">{myCertificats.length}</p>
             <p className="text-[9px] uppercase tracking-widest text-[#3a3a5c]">Certificats</p>
           </div>
         </div>
@@ -57,20 +65,29 @@ export default function ProfilPage() {
         {/* Mes certificats */}
         <div className="mb-6">
           <p className="text-[10px] uppercase tracking-widest text-[#3a3a5c] mb-3">Mes certificats</p>
-          {watches.map((watch) => (
-            <Link href={`/certificat/${watch.tokenId}`} key={watch.tokenId}>
-              <div className="flex items-center justify-between bg-[#f5eccd] border border-[#e0d5b0] rounded-2xl p-4 mb-3 hover:border-[#b8860b] transition-colors">
-                <div>
-                  <p className="font-serif text-[14px] font-medium text-[#1a1a2e]">{watch.name}</p>
-                  <p className="text-[9px] text-[#3a3a5c] mt-0.5">{watch.serialNumber}</p>
+          {myCertificats.length === 0 ? (
+            <div className="text-center py-8 text-[#3a3a5c] text-sm font-light">
+              Aucun certificat pour le moment.
+              <Link href="/home" className="block mt-3 text-[#b8860b] underline underline-offset-2 text-[12px]">
+                Découvrir le catalogue
+              </Link>
+            </div>
+          ) : (
+            myCertificats.map((watch) => (
+              <Link href={`/certificat/${watch.tokenId}`} key={watch.tokenId}>
+                <div className="flex items-center justify-between bg-[#f5eccd] border border-[#e0d5b0] rounded-2xl p-4 mb-3 hover:border-[#b8860b] transition-colors">
+                  <div>
+                    <p className="font-serif text-[14px] font-medium text-[#1a1a2e]">{watch.name}</p>
+                    <p className="text-[9px] text-[#3a3a5c] mt-0.5">{watch.serialNumber}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 rounded-full text-[9px] text-emerald-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
+                    Vérifié ✓
+                  </span>
                 </div>
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 rounded-full text-[9px] text-emerald-700">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
-                  Vérifié ✓
-                </span>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))
+          )}
         </div>
 
         {/* Déconnexion */}
