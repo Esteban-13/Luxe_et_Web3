@@ -18,6 +18,7 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
         string metadataURI;
         uint256 price;
         bool forSale;
+        bool sold;
     }
 
     mapping(uint256 => Watch) public watches;
@@ -25,7 +26,7 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
 
     constructor() ERC721("LuxuryWatch", "LXW") Ownable(msg.sender) {}
 
-    // La marque ajoute une montre en vente
+    // La marque liste une montre en vente
     function listWatch(
         string memory _serialNumber,
         string memory _model,
@@ -35,24 +36,29 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
         _tokenIdCounter++;
         uint256 tokenId = _tokenIdCounter;
 
-        _safeMint(msg.sender, tokenId);
-
         watches[tokenId] = Watch({
             serialNumber: _serialNumber,
             model: _model,
             metadataURI: _metadataURI,
             price: _price,
-            forSale: true
+            forSale: true,
+            sold: false
         });
 
         emit Locked(tokenId);
         return tokenId;
     }
-    // Le client achète une montre
+
+    // Le client achète → on mint directement à son adresse
     function buyWatch(uint256 tokenId, address buyer) public onlyOwner {
         require(watches[tokenId].forSale, "Montre non disponible");
+        require(!watches[tokenId].sold, "Montre deja vendue");
+        
         watches[tokenId].forSale = false;
-        _transfer(address(this), buyer, tokenId);
+        watches[tokenId].sold = true;
+
+        _safeMint(buyer, tokenId);
+        emit Locked(tokenId);
     }
 
     // ERC-5192
@@ -60,7 +66,7 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
         return true;
     }
 
-    // Bloquer les transferts directs
+    // Bloquer les transferts après achat
     function transferFrom(address, address, uint256) public pure override {
         revert("Certificat non transferable");
     }
@@ -75,10 +81,13 @@ contract LuxuryWatch is ERC721, Ownable, IERC5192 {
     ) {
         require(tokenId <= _tokenIdCounter, "Cette montre n'existe pas");
         Watch memory w = watches[tokenId];
-        return (w.serialNumber, w.model, w.metadataURI, ownerOf(tokenId), w.forSale);
+        
+        // Si pas encore vendue, pas de propriétaire
+        address owner = w.sold ? ownerOf(tokenId) : address(0);
+        
+        return (w.serialNumber, w.model, w.metadataURI, owner, w.forSale);
     }
 
-    // Nombre total de montres
     function totalWatches() public view returns (uint256) {
         return _tokenIdCounter;
     }
