@@ -1,5 +1,4 @@
 "use client"
-
 import Link from "next/link"
 import ImagePlaceholder from "./ImagePlaceholder"
 import { Watch } from "@/lib/useWatches"
@@ -42,7 +41,7 @@ export default function ProductCard({ watch, onAddToCart }: ProductCardProps) {
       </div>
 
       <div className="flex gap-2">
-        {watch.forSale && (
+        {watch.forSale ? (
           <button
             onClick={() => onAddToCart({
               tokenId: watch.tokenId,
@@ -54,13 +53,14 @@ export default function ProductCard({ watch, onAddToCart }: ProductCardProps) {
           >
             + Ajouter au panier
           </button>
+        ) : (
+          <Link
+            href={`/certificat/${watch.tokenId}`}
+            className="flex-1 py-2 text-center border border-[#1a1a2e] rounded-full text-[9px] uppercase tracking-widest text-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-[#e8c96a] transition-all"
+          >
+            Voir le certificat →
+          </Link>
         )}
-        <Link
-          href={`/certificat/${watch.tokenId}`}
-          className="px-3 py-2 border border-[#1a1a2e] rounded-full text-[9px] uppercase tracking-widest text-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-[#e8c96a] transition-all"
-        >
-          Certificat
-        </Link>
       </div>
     </div>
   )

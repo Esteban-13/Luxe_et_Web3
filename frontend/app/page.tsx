@@ -1,8 +1,8 @@
 "use client"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { getSmartAccountAddress } from "@/lib/smartAccount"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -20,7 +20,9 @@ export default function LoginPage() {
     setError("")
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500))
+      const smartAddress = getSmartAccountAddress(email)
       localStorage.setItem("timury_user", email)
+      localStorage.setItem("timury_smart_address", smartAddress)
       router.push("/home")
     } catch {
       setError("Une erreur est survenue, veuillez réessayer")
@@ -31,40 +33,17 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-end max-w-sm mx-auto overflow-hidden">
-
-      {/* Image de fond */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/bg-login.png"
-          alt="Timury background"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        {/* Overlay gradient */}
+        <Image src="/bg-login.png" alt="Timury background" fill className="object-cover object-center" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       </div>
-
-      {/* Logo centré en haut */}
       <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
-        <Image
-          src="/logo.png"
-          alt="Timury"
-          width={120}
-          height={120}
-          className="object-contain"
-        />
+        <Image src="/logo.png" alt="Timury" width={120} height={120} className="object-contain" />
       </div>
-
-      {/* Formulaire en bas */}
       <div className="relative z-10 w-full px-6 pb-12 flex flex-col gap-4">
-
-        {/* Connectez-vous */}
         <p className="text-center text-[#e8c96a] text-[18px] font-bold uppercase tracking-widest mb-1">
           Connectez-vous
         </p>
-
-        {/* Input email */}
         <div className="flex flex-col gap-1">
           <label className="text-[10px] uppercase tracking-widest text-[#e8c96a]/70">
             Adresse électronique
@@ -77,12 +56,7 @@ export default function LoginPage() {
             className="w-full px-5 py-4 bg-black/30 border border-[#b8860b]/60 rounded-full text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-[#b8860b] transition-colors backdrop-blur-sm"
           />
         </div>
-
-        {error && (
-          <p className="text-[10px] text-red-400 text-center">{error}</p>
-        )}
-
-        {/* Bouton connexion */}
+        {error && <p className="text-[10px] text-red-400 text-center">{error}</p>}
         <button
           onClick={handleLogin}
           disabled={loading}
@@ -90,7 +64,6 @@ export default function LoginPage() {
         >
           {loading ? "Connexion en cours..." : "Connexion"}
         </button>
-
       </div>
     </div>
   )
